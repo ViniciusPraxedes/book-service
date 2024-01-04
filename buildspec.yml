@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+    pre_build:
+      commands:
+        - export USERNAME=${USERNAME}
+        - export PASSWORD=${PASSWORD}
+    build:
+      commands:
+        - mvn clean package
+    post_build:
+      commands:
+        - echo Success
+env:
+  variables:
+    USERNAME: ${USERNAME}
+    PASSWORD: ${PASSWORD}
+
+artifacts:
+    files:
+      - target/book-service.jar
+    discard-paths: yes
+
