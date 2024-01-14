@@ -25,7 +25,7 @@ public class BookService {
     @Autowired
     public BookService(BookRepository bookRepository, WebClient.Builder webClientBuilder) {
         this.bookRepository = bookRepository;
-        this.webClient = webClientBuilder.baseUrl("http://localhost:8040/inventory").build();
+        this.webClient = webClientBuilder.baseUrl("http://inventory-service.eu-north-1.elasticbeanstalk.com:8040/inventory").build();
     }
 
     // Creates a new book
