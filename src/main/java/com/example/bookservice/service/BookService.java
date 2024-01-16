@@ -46,6 +46,7 @@ public class BookService {
                 .price(request.getPrice())
                 .itemCode(itemCode)
                 .numberOfPages(request.getNumberOfPages())
+                .imageLink(request.getImageLink())
                 .build();
 
         //Creates request for inventory service
@@ -100,6 +101,7 @@ public class BookService {
                 .numberOfPages(bookRepository.findByItemCode(itemCode).get().getNumberOfPages())
                 .author(bookRepository.findByItemCode(itemCode).get().getAuthor())
                 .price(bookRepository.findByItemCode(itemCode).get().getPrice())
+                .imageLink(bookRepository.findByItemCode(itemCode).get().getImageLink())
                 .build();
     }
 
@@ -118,6 +120,7 @@ public class BookService {
         bookRepository.findByItemCode(itemCode).get().setAuthor(request.getAuthor());
         bookRepository.findByItemCode(itemCode).get().setDescription(request.getDescription());
         bookRepository.findByItemCode(itemCode).get().setNumberOfPages(request.getNumberOfPages());
+        bookRepository.findByItemCode(itemCode).get().setImageLink(request.getImageLink());
         bookRepository.save(bookRepository.findByItemCode(itemCode).get());
 
         return mapToBookResponse(bookRepository.findByItemCode(itemCode).get());
@@ -155,6 +158,7 @@ public class BookService {
                 .numberOfPages(book.getNumberOfPages())
                 .price(book.getPrice())
                 .itemCode(book.getItemCode())
+                .imageLink(book.getImageLink())
                 .build();
     }
 }
