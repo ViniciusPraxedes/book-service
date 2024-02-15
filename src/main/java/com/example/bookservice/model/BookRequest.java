@@ -24,6 +24,7 @@ public class BookRequest {
     @NotBlank(message = "Description cannot be blank")
     @Size(max = 4000)
     private String description;
+    private Category category;
     @NotNull(message = "Number of pages cannot be null")
     @Positive(message = "Number of pages must be a positive number")
     private Integer numberOfPages;

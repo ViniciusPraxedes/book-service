@@ -22,6 +22,7 @@ public class Book {
     private String author;
     @Size(max = 4000)
     private String description;
+    private Category category;
     private String itemCode;
     private Integer numberOfPages;
     private BigDecimal price;

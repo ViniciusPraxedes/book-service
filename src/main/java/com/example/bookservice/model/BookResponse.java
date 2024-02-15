@@ -12,6 +12,7 @@ public class BookResponse {
     private String author;
     @Size(max = 4000)
     private String description;
+    private String category;
     private Integer numberOfPages;
     private String itemCode;
     private BigDecimal price;

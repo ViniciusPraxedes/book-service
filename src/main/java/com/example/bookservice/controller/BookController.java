@@ -1,7 +1,9 @@
 package com.example.bookservice.controller;
 
+import com.example.bookservice.model.Book;
 import com.example.bookservice.model.BookRequest;
 import com.example.bookservice.model.BookResponse;
+import com.example.bookservice.model.Category;
 import com.example.bookservice.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -88,6 +90,30 @@ public class BookController {
         bookService.deleteBookByItemCode(itemCode);
     }
 
+    @Operation(summary = "Get all categories")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Category.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request, one or more parameters in the request is bad formatted", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Authorization required", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "The code is broken", content = @Content)})
+    @GetMapping("/all/categories")
+    public List<Category> getAllCategories(){
+        return bookService.getAllCategories();
+    }
 
+    @Operation(summary = "Get books by category")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json", schema = @Schema(implementation = BookResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request, one or more parameters in the request is bad formatted", content = @Content),
+            @ApiResponse(responseCode = "401", description = "Authorization required", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden", content = @Content),
+            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "The code is broken", content = @Content)})
+    @GetMapping("/books/{category}")
+    public List<Book> getAllCategories(@PathVariable Category category){
+        return bookService.getBooksByCategory(category);
+    }
 
 }

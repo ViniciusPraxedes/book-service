@@ -31,6 +31,11 @@ public class BookService {
     // Creates a new book
     public BookResponse createBook(BookRequest request) {
 
+        //Check if category is valid
+        if (Category.valueOf(request.getCategory().name()).name().isEmpty()){
+            throw new IllegalStateException("Invalid category");
+        }
+
         // Check if book already exists in the database
         if (bookRepository.findByName(request.getName()).isPresent()){
             throw new IllegalStateException("Book already exists");
@@ -47,6 +52,7 @@ public class BookService {
                 .itemCode(itemCode)
                 .numberOfPages(request.getNumberOfPages())
                 .imageLink(request.getImageLink())
+                .category(request.getCategory())
                 .build();
 
         //Creates request for inventory service
@@ -102,12 +108,18 @@ public class BookService {
                 .author(bookRepository.findByItemCode(itemCode).get().getAuthor())
                 .price(bookRepository.findByItemCode(itemCode).get().getPrice())
                 .imageLink(bookRepository.findByItemCode(itemCode).get().getImageLink())
+                .category(bookRepository.findByItemCode(itemCode).get().getCategory().name())
                 .build();
     }
 
 
     //Change book by itemCode
     public BookResponse changeBookByItemCode(String itemCode, BookRequest request){
+
+        //Check if category is valid
+        if (Category.valueOf(request.getCategory().name()).name().isEmpty()){
+            throw new IllegalStateException("Invalid category");
+        }
 
         //Check if the book exists
         if (bookRepository.findByItemCode(itemCode).isEmpty()){
@@ -121,6 +133,7 @@ public class BookService {
         bookRepository.findByItemCode(itemCode).get().setDescription(request.getDescription());
         bookRepository.findByItemCode(itemCode).get().setNumberOfPages(request.getNumberOfPages());
         bookRepository.findByItemCode(itemCode).get().setImageLink(request.getImageLink());
+        bookRepository.findByItemCode(itemCode).get().setCategory(request.getCategory());
         bookRepository.save(bookRepository.findByItemCode(itemCode).get());
 
         return mapToBookResponse(bookRepository.findByItemCode(itemCode).get());
@@ -149,6 +162,19 @@ public class BookService {
         bookRepository.delete(bookRepository.findByItemCode(itemCode).get());
     }
 
+
+
+    public List<Category> getAllCategories(){
+        return List.of(Category.values());
+    }
+
+    public List<Book> getBooksByCategory(Category category){
+        System.out.println("Service");
+        System.out.println(category);
+
+        return bookRepository.getBooksByCategory(category);
+    }
+
     // Map the Book object to BookResponse object
     private BookResponse mapToBookResponse(Book book){
         return BookResponse.builder()
@@ -159,6 +185,7 @@ public class BookService {
                 .price(book.getPrice())
                 .itemCode(book.getItemCode())
                 .imageLink(book.getImageLink())
+                .category(book.getCategory().name())
                 .build();
     }
 }
