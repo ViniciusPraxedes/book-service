@@ -14,7 +14,9 @@ import org.springframework.web.reactive.function.client.WebClientRequestExceptio
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.net.ConnectException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -29,12 +31,15 @@ public class BookService {
     }
 
     // Creates a new book
-    public BookResponse createBook(BookRequest request) {
+    public Book createBook(BookRequest request) {
 
         //Check if category is valid
-        if (Category.valueOf(request.getCategory().name()).name().isEmpty()){
-            throw new IllegalStateException("Invalid category");
+        for (int i = 0; i < request.getCategories().size(); i++){
+            if (Category.valueOf(request.getCategories().get(i).name()).name().isEmpty()){
+                throw new IllegalStateException("Invalid category");
+            }
         }
+
 
         // Check if book already exists in the database
         if (bookRepository.findByName(request.getName()).isPresent()){
@@ -52,7 +57,7 @@ public class BookService {
                 .itemCode(itemCode)
                 .numberOfPages(request.getNumberOfPages())
                 .imageLink(request.getImageLink())
-                .category(request.getCategory())
+                .categories(request.getCategories())
                 .build();
 
         //Creates request for inventory service
@@ -76,49 +81,42 @@ public class BookService {
         // Saves book to the database
         bookRepository.save(book);
 
-        return mapToBookResponse(bookRepository.findByItemCode(book.getItemCode()).get());
+        return bookRepository.findByItemCode(book.getItemCode()).get();
     }
 
 
 
     // Get all books in the database
-    public List<BookResponse> getAllBooks(){
+    public List<Book> getAllBooks(){
 
         // Get all books
         List<Book> books = bookRepository.findAll();
 
         //Map all the books to BookResponse
-        return books.stream().map(this::mapToBookResponse).toList();
+        return books;
     }
 
 
     // Get book by item code
-    public BookResponse getBookByItemCode(String itemCode){
+    public Book getBookByItemCode(String itemCode){
 
         //Check if book exists
         if (bookRepository.findByItemCode(itemCode).isEmpty()){
             throw new NotFoundException("Book not found");
         }
 
-        return BookResponse.builder()
-                .itemCode(bookRepository.findByItemCode(itemCode).get().getItemCode())
-                .name(bookRepository.findByItemCode(itemCode).get().getName())
-                .description(bookRepository.findByItemCode(itemCode).get().getDescription())
-                .numberOfPages(bookRepository.findByItemCode(itemCode).get().getNumberOfPages())
-                .author(bookRepository.findByItemCode(itemCode).get().getAuthor())
-                .price(bookRepository.findByItemCode(itemCode).get().getPrice())
-                .imageLink(bookRepository.findByItemCode(itemCode).get().getImageLink())
-                .category(bookRepository.findByItemCode(itemCode).get().getCategory().name())
-                .build();
+        return bookRepository.findByItemCode(itemCode).get();
     }
 
 
     //Change book by itemCode
-    public BookResponse changeBookByItemCode(String itemCode, BookRequest request){
+    public Book changeBookByItemCode(String itemCode, BookRequest request){
 
-        //Check if category is valid
-        if (Category.valueOf(request.getCategory().name()).name().isEmpty()){
-            throw new IllegalStateException("Invalid category");
+        //Check if categories is valid
+        for (int i = 0; i < request.getCategories().size(); i++){
+            if (Category.valueOf(request.getCategories().get(i).name()).name().isEmpty()){
+                throw new IllegalStateException("Invalid categories");
+            }
         }
 
         //Check if the book exists
@@ -133,10 +131,10 @@ public class BookService {
         bookRepository.findByItemCode(itemCode).get().setDescription(request.getDescription());
         bookRepository.findByItemCode(itemCode).get().setNumberOfPages(request.getNumberOfPages());
         bookRepository.findByItemCode(itemCode).get().setImageLink(request.getImageLink());
-        bookRepository.findByItemCode(itemCode).get().setCategory(request.getCategory());
+        bookRepository.findByItemCode(itemCode).get().setCategories(request.getCategories());
         bookRepository.save(bookRepository.findByItemCode(itemCode).get());
 
-        return mapToBookResponse(bookRepository.findByItemCode(itemCode).get());
+        return bookRepository.findByItemCode(itemCode).get();
     }
 
 
@@ -168,24 +166,10 @@ public class BookService {
         return List.of(Category.values());
     }
 
-    public List<Book> getBooksByCategory(Category category){
-        System.out.println("Service");
-        System.out.println(category);
+    public List<Book> getBooksByCategory(Set<Category> categories){
 
-        return bookRepository.getBooksByCategory(category);
+
+        return bookRepository.findBooksByCategories(categories);
     }
 
-    // Map the Book object to BookResponse object
-    private BookResponse mapToBookResponse(Book book){
-        return BookResponse.builder()
-                .name(book.getName())
-                .author(book.getAuthor())
-                .description(book.getDescription())
-                .numberOfPages(book.getNumberOfPages())
-                .price(book.getPrice())
-                .itemCode(book.getItemCode())
-                .imageLink(book.getImageLink())
-                .category(book.getCategory().name())
-                .build();
-    }
 }

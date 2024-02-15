@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @Entity
@@ -22,7 +23,11 @@ public class Book {
     private String author;
     @Size(max = 4000)
     private String description;
-    private Category category;
+    @ElementCollection(targetClass = Category.class)
+    @CollectionTable(name = "book_category", joinColumns = @JoinColumn(name = "book_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category")
+    private List<Category> categories;
     private String itemCode;
     private Integer numberOfPages;
     private BigDecimal price;

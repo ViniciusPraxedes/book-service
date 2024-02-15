@@ -10,12 +10,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 @Repository
 public interface BookRepository extends JpaRepository <Book, Integer> {
     Optional<Book> findByName(String bookName);
     Optional<Book> findByItemCode(String itemCode);
-    List<Book> getBooksByCategory(Category category);
+    @Query("SELECT DISTINCT b FROM Book b JOIN b.categories c WHERE c IN :categories")
+    List<Book> findBooksByCategories(@Param("categories") Set<Category> categories);
 
 }
