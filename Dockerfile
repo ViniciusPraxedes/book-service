@@ -9,7 +9,8 @@ RUN mvn package
 
 FROM eclipse-temurin:17.0.4.1_1-jre
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8030
+EXPOSE 8080
 ENV USERNAME=${USERNAME}
 ENV PASSWORD=${PASSWORD}
+ENV DATASOURCE=${DATASOURCE}
 CMD ["java", "-jar", "app.jar"]
