@@ -1,7 +1,4 @@
-
-### README for Tome Treasures - Backend (book-service)
-
-# Tome Treasures - Backend
+# Tome Treasures - Backend (book-service)
 
 🌟 **Full stack e-commerce, fully functional using Stripe as payment solution**
 
