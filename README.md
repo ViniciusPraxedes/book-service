@@ -31,7 +31,6 @@ Check out the live demo: [tome-treasures.onrender.com](https://tome-treasures.on
 ## Repositories
 
 - **Book Service**: [book-service](https://github.com/ViniciusPraxedes/book-service)
-- **Order Service**: [order-service](https://github.com/ViniciusPraxedes/order-service)
 
 ## Getting Started
 
